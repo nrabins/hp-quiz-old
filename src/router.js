@@ -7,8 +7,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: () => import('./views/Home.vue')
+      name: 'quiz',
+      component: () => import('./views/Quiz.vue')
     },
     {
       path: '/quiz',
