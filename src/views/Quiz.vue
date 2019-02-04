@@ -1,22 +1,23 @@
 <template>
   <div class="quiz">
     <div class="question-breadcrumbs">
-      <svg height="40" width="40" v-for="(question, questionIndex) in questions" :key="questionIndex" @click="goToQuestion(questionIndex)">
-        <circle 
-          cx="20" 
-          cy="20" 
-          r="10" 
-          :stroke="breadCrumbStyle(questionIndex).stroke" 
-          stroke-width="2" 
-          :fill="breadCrumbStyle(questionIndex).fill">
-        </circle>
+      <svg
+        height="40"
+        width="40"
+        v-for="(question, questionIndex) in questions"
+        :key="questionIndex"
+        @click="goToQuestion(questionIndex)"
+      >
+        <circle
+          cx="20"
+          cy="20"
+          r="10"
+          :stroke="questionIndex == currentQuestionIndex ? 'gold' : 'black'"
+          :stroke-width="questionIndex == currentQuestionIndex ? 4 : 1"
+          :fill="answers[questionIndex] === undefined ? 'gray' : 'green'"
+        ></circle>
       </svg>
-      
-      <!-- <span 
-        v-for="(question, index) in questions" 
-        :key="index" 
-        @click="goToQuestion(index)" 
-        :class="{ 'current': index === currentQuestionIndex }">•</span> -->
+
     </div>
 
     <div class="question-container">
@@ -40,7 +41,7 @@ export default {
       answers: []
     };
   },
-  mounted() {
+  created() {
     this.answers = new Array(this.questions.length);
   },
   computed: {
@@ -49,13 +50,6 @@ export default {
     },
     questions() {
       return this.$store.state.questions;
-    },
-    breadCrumbStyles() {
-      return this.questions.map(question => ({
-        stroke: "black",
-        fill: "red",
-        questionThing: question,
-      }));
     }
   },
   methods: {
@@ -64,6 +58,31 @@ export default {
     },
     selectAnswer(questionIndex, answerIndex) {
       this.answers[questionIndex] = answerIndex;
+      let allAnswered = true;
+      for (let i = 0; i < this.questions.length; i++) {
+        if (this.answers[i] === undefined) {
+          allAnswered = false;
+          break;
+        }
+      }
+
+      if (allAnswered) {
+        // navigate to results
+        this.$router.push('results');
+      } else {
+        // navigate to next unanswered question
+        for (let i = 0; i < this.questions.length; i++) {
+          const potentialNextQuestionIndex =
+            (this.currentQuestionIndex + i) % this.questions.length;
+          if (this.answers[potentialNextQuestionIndex] === undefined) {
+            this.goToQuestion(potentialNextQuestionIndex);
+            return;
+          }
+        }
+        console.log(
+          `something went wrong, we didn't find an unanswered question`
+        );
+      }
     }
   }
 };
