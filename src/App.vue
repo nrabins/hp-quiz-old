@@ -1,11 +1,20 @@
 <template>
   <div id="app">
     <div id="bg-image"></div>
-    <div id="interface">
-      <router-view/>
-    </div>
+    <quiz-dialog />
   </div>
 </template>
+
+<script>
+import QuizDialog from '@/components/QuizDialog';
+
+export default {
+  components: {
+    QuizDialog,
+  },
+}
+</script>
+
 
 <style lang="scss">
 body, html {
@@ -33,15 +42,4 @@ body, html {
   text-align: center;
 }
 
-#interface {
-  background-color: #d2ddff;
-  background-color: #d2ddffbe; // fallback
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  height: 80%;
-  width: 75%;
-}
 </style>
